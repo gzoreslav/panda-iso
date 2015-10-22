@@ -11,9 +11,17 @@ class CompetitionsHandler extends React.Component {
     render() {
         return (
             <div className="container page-wrapper">
-                <ol className="breadcrumb">
-                    <li><a href="#">Головна</a></li>
-                    <li className="active">Змагання</li>
+                <ol className="breadcrumb" itemScope itemType="http://schema.org/BreadcrumbList">
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                        <a itemProp="item" href="/">
+                            <span itemProp="name">Головна</span>
+                        </a>
+                    </li>
+                    <li className="active" itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                        <span itemProp="item">
+                            <span itemProp="name">Змагання</span>
+                        </span>    
+                    </li>
                 </ol>
                 <h4 className="title text-danger">Змагання</h4>
                 <hr className="colorgraph"/>

@@ -5,7 +5,7 @@ import {Header, Footer} from './common/index.jsx';
 class AppHandler extends React.Component {
     render() {
         return (
-            <div>
+            <div itemScope itemType="http://schema.org/Organization">
                 <Header/>
                     <RouteHandler {...this.props} key={this.props.pathname} />
                 <Footer/>

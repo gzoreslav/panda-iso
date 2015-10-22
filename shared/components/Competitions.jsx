@@ -27,7 +27,7 @@ var CompetitionRows = React.createClass({
             const link = 'competitions/'+competition.id;
             let categories = (<em>немає категорій</em>);
             return (
-                <tr itemScope itemType="http://schema.org/Event">
+                <tr itemScope itemType="http://schema.org/SportsEvent">
                     <td>
                         <strong><a href={link}><span itemProp="name">{competition.title}</span></a></strong><br/>
                         <CompetitionCategories data={competition.categories} />
@@ -37,7 +37,8 @@ var CompetitionRows = React.createClass({
                         <span itemProp="description">{competition.type_title}</span>
                     </td>
                     <td>
-                        <span itemProp="startDate">{moment(competition.start_date).format('DD/MM/YY')}</span>
+                        <meta itemProp="startDate" content={moment(competition.start_date).format('YYYY-MM-DD')}/>
+                        <span>{moment(competition.start_date).format('DD/MM/YY')}</span>
                     </td>
                     <td itemProp="location" itemScope itemType="http://schema.org/Place">
                         <span itemProp="address" itemScope itemType="http://schema.org/PostalAddress">

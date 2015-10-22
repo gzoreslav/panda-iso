@@ -22,11 +22,10 @@ var ArticleList = React.createClass({
         var items = this.props.data.map((article) => {
             return (
                 <div className="article" itemScope itemType="http://schema.org/Article">
-                    <h3 className="title text-danger" itemProp="name">{article.title}</h3>
+                    <h3 className="title text-danger" itemProp="headline">{article.title}</h3>
                     <small className="text-info">
-                        <span className="fa fa-calendar"/> <span itemProp="datePublished">
-                            {moment(article.posted).format('MMMM Do YYYY')}
-                        </span>    
+                        <span className="fa fa-calendar"/> {moment(article.posted).format('MMMM Do YYYY')}
+                        <meta itemProp="datePublished" content={moment(article.posted).format('YYYY-MM-DD')}/>    
                     </small>
                     <hr/>
                     <div itemProp="articleBody" dangerouslySetInnerHTML={this.rawMarkup(article.descr)}/>

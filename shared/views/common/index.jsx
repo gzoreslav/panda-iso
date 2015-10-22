@@ -70,8 +70,8 @@ export const Header = React.createClass({
       		<div id="main-menu" className="navbar navbar-default navbar-fixed-top">
 		        <div className="container">
 		          <div className="navbar-header">
-		            <a className="navbar-brand" rel="home" href={config.host}>
-		              <img src={config.host + "/img/logo.png"} alt="logo"/>
+		            <a itemProp="url" className="navbar-brand" rel="home" href={config.host}>
+		              <img itemProp="logo" src={config.host + "/img/logo.png"} alt="logo"/>
 		            </a>
 		          </div>
 		          <div className="collapse navbar-collapse navbar-right">
@@ -113,7 +113,9 @@ export const Footer = React.createClass({
                       alt="MyCounter - лічильник і статистика"
                       width="88" height="31" border="0" />
               </div>
-              <p className="navbar-text pull-right"><a href="https://www.facebook.com/pandaruncomua" target="_blank">Ми у Facebook</a></p>
+              <p className="navbar-text pull-right">
+                <a itemProp="sameAs" href="https://www.facebook.com/pandaruncomua" target="_blank">Ми у Facebook</a>
+              </p>
         		</div>
           </div>  
         );

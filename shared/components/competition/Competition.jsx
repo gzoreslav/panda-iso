@@ -11,13 +11,25 @@ const Competition = React.createClass({
     },
     render() {
         return (
-            <div className="container page-wrapper">
-                <ol className="breadcrumb">
-                    <li><a href={config.host}>Головна</a></li>
-                    <li><a href={config.host + "/competitions"}>Змагання</a></li>
-                    <li className="active">{this.state.data.title}</li>
+            <div className="container page-wrapper" itemScope itemType="http://schema.org/SportsEvent">
+                <ol className="breadcrumb" itemScope itemType="http://schema.org/BreadcrumbList">
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                      <a itemProp="item" href={config.host}>
+                        <span itemProp="name">Головна</span>
+                      </a>
+                    </li>
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                      <a itemProp="item" href={config.host + "/competitions"}>
+                        <span itemProp="name">Змагання</span>
+                      </a>
+                    </li>
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="active">
+                      <span itemProp="item">
+                        <span itemProp="name">{this.state.data.title}</span>
+                      </span>  
+                    </li>
                 </ol>
-                <h4 className="title text-danger">{this.state.data.title}</h4>
+                <h4 itemProp="name" className="title text-danger">{this.state.data.title}</h4>
                 <hr className="colorgraph"/>
                 <div className="row">
                     <div className="col-sm-4">
@@ -42,24 +54,27 @@ const Info = React.createClass({
                <tbody>
                    <tr>
                        <td>Офіційний сайт</td>
-                       <td><a target="_blank" href={this.props.data.url}>{this.props.data.url}</a></td>
+                       <td><a target="_blank" itemProp="url" href={this.props.data.url}>{this.props.data.url}</a></td>
                    </tr>
                    <tr>
                        <td>Тип</td>
                        <td>{this.props.data.type_title}</td>
                    </tr>
                    <tr>
-                       <td>Дата</td>
-                       <td>{moment(this.props.data.start_date).format('DD/MM/YY')}</td>
+                      <td>Дата</td>
+                      <td>
+                        <meta itemProp="startDate" content={moment(this.props.data.start_date).format('YYYY-MM-DD')}/>
+                        {moment(this.props.data.start_date).format('DD/MM/YY')}
+                      </td>
                    </tr>
-                   <tr>
+                   <tr itemProp="location" itemScope itemType="http://schema.org/PostalAddress">
                        <td>Локація</td>
-                       <td>{this.props.data.location}</td>
+                       <td itemProp="addressLocality">{this.props.data.location}</td>
                    </tr>
                </tbody>
                </table>
                <table className="table table-bordered">
-                   <tbody><tr><td>{this.props.data.descr}</td></tr></tbody>
+                   <tbody><tr><td itemProp="description">{this.props.data.descr}</td></tr></tbody>
                </table>
            </div>
        );
@@ -71,7 +86,7 @@ const CategoryList = React.createClass({
         const laps = this.props.showLaps ? (<th>Кількість кіл</th>) : null;
         return (
             <div>
-                <h5>Категорії</h5>
+                <h5>Протоколи/результати змагань в категоріях</h5>
                 <table className="table table-striped table-bordered">
                     <thead>
                         <tr>

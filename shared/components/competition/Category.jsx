@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import config from '../../../config/default.js';
 import {Input, Button, Nav, NavItem} from 'react-bootstrap';
+import Sharer from '../Sharer.jsx';
 
 const Category = React.createClass({
     getInitialState() {
@@ -41,12 +42,28 @@ const Category = React.createClass({
     },
     render() {
         return (
-            <div className="container page-wrapper">
-                <ol className="breadcrumb">
-                    <li><a href={config.host}>Головна</a></li>
-                    <li><a href={config.host + "/competitions"}>Змагання</a></li>
-                    <li><a href={config.host + "/competitions/" + this.state.data.id_competition}>{this.state.data.competition_title}</a></li>
-                    <li className="active">{this.state.data.title}</li>
+            <div className="container page-wrapper" itemScope itemType="http://schema.org/SportsEvent">
+                <ol className="breadcrumb" itemScope itemType="http://schema.org/BreadcrumbList">
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                      <a itemProp="item" href={config.host}>
+                        <span itemProp="name">Головна</span>
+                      </a>
+                    </li>
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                      <a itemProp="item" href={config.host + "/competitions"}>
+                        <span itemProp="name">Змагання</span>
+                      </a>
+                    </li>
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
+                      <a itemProp="item" href={config.host + "/competitions/" + this.state.data.id_competition}>
+                        <span itemProp="name">{this.state.data.competition_title}</span>
+                      </a>
+                    </li>
+                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="active">
+                      <span itemProp="item">
+                        <span itemProp="name">{this.state.data.title}</span>
+                      </span>  
+                    </li>
                 </ol>
                 <Summary 
                   data={this.state.data}
@@ -111,7 +128,8 @@ const ResultList = React.createClass({
                             {laps}
                         </tr>
                     </thead>
-                    <ResultRows 
+                    <ResultRows
+                      info={this.props.data} 
                       data={this.props.results.data}
                       filter={this.props.filter}
                       tab={this.props.tab}/>
@@ -162,7 +180,14 @@ const ResultRows = React.createClass({
                 <tr>
                     <td>{result.rank}</td>
                     <td>{result.number}</td>
-                    <td><a href="#">{result.firstname + ' ' + result.lastname}</a></td>
+                    <td>
+                      <span itemProp="performers" itemScope itemType="http://schema.org/Person">
+                        <a href="#"><span itemProp="name">{result.firstname + ' ' + result.lastname}</span></a>
+                        <Sharer
+                          info={this.props.info}
+                          result={result}/>
+                      </span>  
+                    </td>
                     <td>{sex}</td>
                     {values}
                 </tr>
@@ -341,8 +366,16 @@ const Summary = React.createClass({
           <img src={'/img/events-logo/' + this.props.data.logo}/>
         </div>  
         <div className="col-sm-6">
-          <h3 className="title text-danger">{this.props.data.competition_title}</h3>
-          <span className="title text-info"><strong>Категорія:</strong> {this.props.data.title}</span>
+          <h3 className="title text-danger" itemProp="name">{this.props.data.competition_title}</h3>
+          <span className="title text-info"><strong>Категорія:</strong> {this.props.data.title}</span><br/>
+          <meta itemProp="startDate" content={moment(this.props.data.start_date).format('YYYY-MM-DD')}/>
+          <span className="fa fa-calendar"/> {moment(this.props.data.start_date).format('DD/MM/YY')}<br/>
+          <span itemProp="location" itemScope itemType="http://schema.org/Place">
+            <meta itemProp="name" content={this.props.data.location}/>
+            <span itemProp="address" itemScope itemType="http://schema.org/PostalAddress">
+              <span className="fa fa-map-marker"/> <span itemProp="addressLocality">{this.props.data.location}</span>
+            </span>  
+          </span>  
         </div>  
         <div className="col-sm-3">
           <SmallStat 
@@ -354,7 +387,15 @@ const Summary = React.createClass({
       ) : (
       <div className="row">
         <div className="col-sm-11">
-          <h4 className="title text-danger"><span className="fa fa-table"/> {this.props.data.competition_title} - {this.props.data.title} - [протокол змагань]</h4>
+          <h4 className="title text-danger" itemProp="name">{this.props.data.competition_title} - {this.props.data.title} - [протокол/результати змагань]</h4>
+          <meta itemProp="startDate" content={moment(this.props.data.start_date).format('YYYY-MM-DD')}/>
+          <span className="fa fa-calendar"/> {moment(this.props.data.start_date).format('DD/MM/YY')}&nbsp;
+          <span itemProp="location" itemScope itemType="http://schema.org/Place">
+            <meta itemProp="name" content={this.props.data.location}/>
+            <span itemProp="address" itemScope itemType="http://schema.org/PostalAddress">
+              <span className="fa fa-map-marker"/> <span itemProp="addressLocality">{this.props.data.location}</span>
+            </span>  
+          </span>  
         </div>
         <div className="col-sm-1">
           <img src={'/img/events-logo/' + this.props.data.logo} style={{visibility: 'hidden', height: '1px', width: '1px'}}/>

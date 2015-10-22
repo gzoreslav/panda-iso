@@ -78,6 +78,7 @@ app.use(async function (req, res, next) {
                 <meta name="description" content="PandaRUN | каталог результатів змагань - біг, велосипед та інші види
                 змагань на час. Реєстрація, профайл учасника, можливість ділитись результатами в соцмережах, тощо.">
                 <meta name="google-site-verification" content="QoOlWVXlQSt1cWg66STcs6J1cOfcUOOVPSs92hktAL4" />
+                <meta property="fb:app_id" content="953645997999606">
             </head>
             <body>
                 <div id="fb-root"></div>
