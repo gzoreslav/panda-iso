@@ -6,8 +6,17 @@ class CategoryHandler extends React.Component {
     static async routerWillRun({flux, state}) {
         let categoryActions = flux.getActions('categories');
         let resultsActions = flux.getActions('results');
-        await categoryActions.getCategory(state.params.id);
-        await resultsActions.getResults(state.params.id);
+        try {
+            if (typeof window !== 'undefined') {
+                await categoryActions.getCategory(state.params.id);
+                await resultsActions.getResults(state.params.id);
+            } else {
+                await categoryActions.getCategory(state.params.id);
+                await resultsActions.getResults(state.params.id);
+            }
+        } catch(error) {
+            console.log(error);
+        }    
     }
 
     render() {

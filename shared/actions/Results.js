@@ -8,7 +8,7 @@ class ResultsActions extends Actions {
         return new Promise((resolve, reject) => {
             request.get(`${API_HOST}/api/category/${id}/results`)
                 .end((error, response) => {
-                    if (error) return reject(error);
+                    if (error) return reject(response);
                     resolve(response.body);
                 });
         });

@@ -8,7 +8,7 @@ class CompetitionsActions extends Actions {
         return new Promise((resolve, reject) => {
             request.get(`${API_HOST}/api/competitions`)
                 .end((error, response) => {
-                    if (error) return reject(error);
+                    if (error) return reject(response);
                     resolve(response.body);
                 });
         });

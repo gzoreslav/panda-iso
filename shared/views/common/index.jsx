@@ -1,43 +1,27 @@
 import React from 'react';
 import Router from 'react-router';
+import classNames from 'classnames';
 import _ from 'lodash';
 import config from '../../../config/default.js';
 
 const items = [
   {
-    label: 'Головна',
-    name: 'index',
-    link: config.host
-  },
-  {
-    label: 'Змагання',
-    name: 'competitions',
-    link: config.host + '/competitions'
-  },
-  {
     label: 'Календар',
-    name: 'calendar',    
-    link: config.host + '/calendar'
+    name: 'competitions',
+    link: config.host + '/competitions',
+    enabled: true
   },
   {
     label: 'Учасники',
     name: 'competitors',
-    link: config.host + '/competitors'
+    link: config.host + '/competitors',
+    enabled: false
   },
   {
-    label: 'Статистика',
-    name: 'statistic',
-    link: config.host + '/statistic'
-  },
-  {
-    label: 'Мій профайл',
+    label: 'Мій Профайл',
     name: 'profile',
-    link: config.host + '/profile'
-  },
-  {
-    label: 'Про нас',
-    name: 'about',
-    link: config.host + '/about'
+    link: config.host + '/profile',
+    enabled: true
   }
 ];
 
@@ -48,19 +32,23 @@ const MenuItems = React.createClass({
     render () {
         const routes = this.context.router.getCurrentRoutes();
         const links = _(items).map( item => {
-                let className = ((routes[1].name === item.name) || 
-                  (routes[1].name === 'default') && (item.name === 'index')) ? 'active' : '';
                 return (
-                  <li className={className}>
+                  <li className={
+                    classNames(
+                      {'active': (routes[1].name === 'default') && (item.name === 'index')},
+                      {'disabled': !item.enabled}
+                    )
+                  }>
                     <a href={item.link}>{item.label}</a>
                   </li>
                 )
               })
               .value();
-
-        return <ul className="nav navbar-nav main-menu">
+        return (
+          <ul className="nav navbar-nav main-menu">
             {links}
-        </ul>;
+          </ul>
+        );
     }
 });
 

@@ -5,7 +5,11 @@ import Competition from '../../components/competition/Competition.jsx';
 class CompetitionHandler extends React.Component {
     static async routerWillRun({flux, state}) {
         let competitionActions = flux.getActions('competitions');
-        await competitionActions.getCompetition(state.params.id);
+        try {
+            await competitionActions.getCompetition(state.params.id);
+        } catch(error) {
+            console.log(error);
+        }    
     }
 
     render() {

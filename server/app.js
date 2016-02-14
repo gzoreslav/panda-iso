@@ -7,7 +7,6 @@ import React from 'react';
 import Router from 'react-router';
 import FluxComponent from 'flummox/component';
 import Flux from '../shared/Flux';
-//import api from './routes';
 import routes from '../client/routes';
 import performRouteHandlerStaticMethod from '../utils/performRouteHandlerStaticMethod';
 
@@ -72,6 +71,7 @@ app.use(async function (req, res, next) {
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <title>PandaRUN v.0.0.1 - Каталог результатів змагань</title>
                 <link rel="stylesheet" href="/css/index.css" />
+                <link rel="stylesheet" href="/css/PictureShow.css" />
                 <link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
                 <meta name="keywords" content="competitions, sport, run, running, cycle, bicycle, marathon,
                 halfmarathon, brevet, спорт, змагання, результати, марафон, півмарафон, бревет, велосипед, біг, МТБ" >
@@ -82,15 +82,8 @@ app.use(async function (req, res, next) {
             </head>
             <body>
                 <div id="fb-root"></div>
-                <script>(function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/uk_UA/sdk.js#xfbml=1&version=v2.5&appId=953645997999606";
-                fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));</script>
                 <div id="app">${html}</div>
-                <script type="text/javascript" src="/js/bundle.min.js"></script>
+                <script type="text/javascript" src="/js/bundle.js"></script>
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});

@@ -7,6 +7,8 @@ import CompetitionsHandler from '../shared/views/CompetitionsHandler.jsx';
 import InDevelopmentHandler from '../shared/views/InDevelopmentHandler.jsx';
 import CompetitionHandler from '../shared/views/competition/CompetitionHandler.jsx';
 import CategoryHandler from '../shared/views/competition/CategoryHandler.jsx';
+import ProfileHandler from '../shared/views/ProfileHandler.jsx';
+import LoginHandler from '../shared/views/LoginHandler.jsx';
 
 export default (
         <Route handler={AppHandler}>
@@ -20,7 +22,8 @@ export default (
                 </Route>
             	<DefaultRoute handler={CompetitionsHandler}/>
             </Route>	
-            <Route name='calendar' path='/calendar' handler={InDevelopmentHandler}/>
-            <NotFoundRoute name='not-found' handler={NotFoundHandler} />
+            <Route name='profile' path='/profile' handler={ProfileHandler}/>
+            <Route name='login' path='/login' handler={LoginHandler}/>
+            {/*<NotFoundRoute name='not-found' handler={NotFoundHandler} />*/}
         </Route>
 );

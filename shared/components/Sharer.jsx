@@ -1,11 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 import config from '../../config/default.js';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 const Sharer = React.createClass({
     shareToFB(e) {
         e.preventDefault();
-        const name = `Мій результат на ${this.props.info.competition_title} (категорія ${this.props.info.title})`;
+        const name = `Мій результат на ${this.props.info.competition_title}`;
         const caption = config.host; 
         const rich = (this.props.result.sex === 'f') ? 'подолала' : 'подолав';  
         const description = `${moment(this.props.info.start_date).format('DD/MM/YYYY')} ` +
@@ -38,42 +39,20 @@ const Sharer = React.createClass({
                 appId      : '953645997999606',
                 cookie     : true,  // enable cookies to allow the server to access 
                 xfbml      : true,  // parse social plugins on this page
-                version    : 'v2.2' // use version 2.2
+                version    : 'v2.3' // use version 2.2
             });
         }
     },
     render() {
+        const tooltip = (
+          <Tooltip>Поділитись результатом у Facebook</Tooltip>
+        );
         return(
+          <OverlayTrigger placement="top" overlay={tooltip}>
             <a href="#" className="share-fb" onClick={this.shareToFB}>share</a>
+          </OverlayTrigger>
         );
     }
 });
 
 export default Sharer; 
-
-    /*shareToFB(e) {
-      e.preventDefault();
-      FB.ui(
-          {
-          method: 'feed',
-          name: '${result.firstname} ${result.lastname} [результат ${result.rank} з 0]',
-          link: Backbone.history.location.href,
-          picture: 'http://www.pandarun.com.ua/media/competitions/' + self.model.get("poster"),
-          description: 
-                   self.model.get("date") +
-            ', ' + self.model.get("type") +
-            ', ' + self.model.get("town") +
-            '. Довжина дистанції - ' + self.model.get("dist") + ' км',
-          caption: 'Результат змагань \"' + self.model.get("competition_title") + ' [' + self.model.get("title") + ']\"',
-          message: ''
-        },
-        function (response) {
-                   if (response && response.post_id) {
-                       console.log('Post was published.');
-                   } else {
-                       console.log('Post was not published.');
-                   }
-               });
-      }
-    });
-    },*/   

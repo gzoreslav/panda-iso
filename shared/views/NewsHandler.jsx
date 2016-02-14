@@ -1,6 +1,7 @@
 import React from 'react';
 import Flux from 'flummox/component';
-import Articles from '../components/Articles';
+import Articles from '../components/Articles.jsx';
+import Slider from '../components/Slider.jsx';
 
 class NewsHandler extends React.Component {
     static async routerWillRun({flux, state}) {
@@ -8,10 +9,11 @@ class NewsHandler extends React.Component {
         let articleActions = flux.getActions('articles');
         await articleActions.getArticles();
     }
-
     render() {
         return (
-            <div className="container page-wrapper">
+            <div style={{position: "relative", top: "100px"}}>
+                <Slider/>
+                <div className="container page-wrapper-carusel">
                 <div className="row">
                     <div className="col-sm-8">
                         <Flux connectToStores={['articles']}>
@@ -19,9 +21,21 @@ class NewsHandler extends React.Component {
                         </Flux>
                     </div>
                     <div className="col-sm-4">
+                        <h5 className="text-success partners">Ми в соцмережах:</h5>
                         <div>
-                            <div className="fb-like" data-href="http://pandarun.com.ua" data-layout="standard"
-                                 data-action="like" data-show-faces="true" data-share="false"></div>
+                            <div className="fb-page" 
+                                data-href="https://www.facebook.com/pandaruncomua" 
+                                data-small-header="true" 
+                                data-adapt-container-width="true" 
+                                data-hide-cover="false" 
+                                data-show-facepile="true" 
+                                data-show-posts="false">
+                                    <div className="fb-xfbml-parse-ignore">
+                                        <blockquote cite="https://www.facebook.com/pandaruncomua">
+                                            <a href="https://www.facebook.com/pandaruncomua">Panda Run Community</a>
+                                        </blockquote>
+                                    </div>
+                            </div>
                         </div>
                         <hr/>
                         <div className="alert alert-info" role="alert">
@@ -50,7 +64,14 @@ class NewsHandler extends React.Component {
                     </div>
                 </div>
             </div>
+            </div>
         );
+    }
+    componentDidMount() {
+        if (typeof FB !== 'undefined') {
+            FB.XFBML.parse();
+        }
+        (adsbygoogle = window.adsbygoogle || []).push({});
     }
 }
 

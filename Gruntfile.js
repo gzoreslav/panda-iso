@@ -19,7 +19,7 @@ module.exports = function(grunt) {
       },
       open: {
           server: {
-              path: 'http://localhost:3000/',
+              path: 'http://localhost:3333/',
               app: (function(){
                   var browsers = {
                       linux: 'google-chrome',

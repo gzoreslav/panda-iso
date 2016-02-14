@@ -1,16 +1,8 @@
 import React from 'react';
 import Flux from 'flummox/component';
-import Competitions from '../components/Competitions.jsx';
+import SocialLogin from '../components/SocialLogin.jsx';
 
-class CompetitionsHandler extends React.Component {
-    static async routerWillRun({flux, state}) {
-        let competitionActions = flux.getActions('competitions');
-        if (typeof window !== 'undefined') {
-            competitionActions.getCompetitions();
-        } else {
-            await competitionActions.getCompetitions();
-        }    
-    }
+class SocialLoginHandler extends React.Component {
 
     render() {
         return (
@@ -23,18 +15,16 @@ class CompetitionsHandler extends React.Component {
                     </li>
                     <li className="active" itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
                         <span itemProp="item">
-                            <span itemProp="name">Календар</span>
+                            <span itemProp="name">Авторизація</span>
                         </span>    
                     </li>
                 </ol>
-                <h4 className="title text-danger">Календар</h4>
+                <h4 className="title text-danger">Авторизація</h4>
                 <hr className="colorgraph"/>
-                <Flux connectToStores={['competitions']}>
-                    <Competitions/>
-                </Flux>
-            </div>
+                <SocialLogin/>
+            </div>    
         );
     }
 }
 
-export default CompetitionsHandler;
+export default SocialLoginHandler;

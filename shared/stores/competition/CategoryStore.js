@@ -10,7 +10,7 @@ class CategoryStore extends Store {
 
     handleCategory(data) {
         this.setState({
-            resp: data ? data : null
+            resp: data ? data : {}
         });
     }
 }

@@ -1,17 +1,17 @@
 import React from 'react';
-import Flux from 'flummox/component';
-import Competitions from '../components/Competitions.jsx';
+import SocialLogin from '../components/SocialLogin.jsx';
+import {Facebook} from '../mixins/social/Facebook.js';
 
-class CompetitionsHandler extends React.Component {
-    static async routerWillRun({flux, state}) {
-        let competitionActions = flux.getActions('competitions');
-        if (typeof window !== 'undefined') {
-            competitionActions.getCompetitions();
-        } else {
-            await competitionActions.getCompetitions();
-        }    
-    }
-
+const ProfileHandler = React.createClass({
+    mixins: [
+        Facebook
+    ],
+    getInitialState() {
+        return {
+            status: 'unknown',
+            loading: true
+        }
+    },
     render() {
         return (
             <div className="container page-wrapper">
@@ -23,18 +23,19 @@ class CompetitionsHandler extends React.Component {
                     </li>
                     <li className="active" itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
                         <span itemProp="item">
-                            <span itemProp="name">Календар</span>
+                            <span itemProp="name">Мій Профайл</span>
                         </span>    
                     </li>
                 </ol>
-                <h4 className="title text-danger">Календар</h4>
+                <h4 className="title text-danger">Мій Профайл</h4>
                 <hr className="colorgraph"/>
-                <Flux connectToStores={['competitions']}>
-                    <Competitions/>
-                </Flux>
+                <SocialLogin 
+                    status={this.state.status}
+                    loading={this.state.loading}
+                />
             </div>
         );
     }
-}
+});
 
-export default CompetitionsHandler;
+export default ProfileHandler;

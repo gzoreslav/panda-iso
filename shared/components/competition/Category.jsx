@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import classNames from 'classnames';
 import config from '../../../config/default.js';
 import {Input, Button, Nav, NavItem} from 'react-bootstrap';
 import Sharer from '../Sharer.jsx';
@@ -16,31 +17,61 @@ const Category = React.createClass({
         }
     },
     componentWillMount() {
-        this.setState({
-          data: this.props.resp.data,
-          results: this.props.results
-        });
+        if (!this.props.error) {
+          this.setState({ 
+            data: this.props.resp.data,
+            results: this.props.result
+          });
+        }  
     },
     handleUserInput: function(filter) {
         this.setState({
             filter: filter
         });
     },
-    handleNav: function(tab) {
+    handleNav(tab) {
         this.setState({
             tab: tab
         });
-      },
+    },
     clearFilters() {
         this.setState({
             filter: {
-            firstname: '',
-            lastname: '',
-            sex: 'all'
+              firstname: '',
+              lastname: '',
+              sex: 'all'
             }
         });
     },
     render() {
+      if (this.props.error) {
+        let message = `${this.props.resp.status} ${this.props.resp.statusText}`;
+        if (this.props.resp.status === 500) {
+          message = 'Помилка сервера';
+        } 
+        return (
+            <div className="container page-wrapper">
+                <div className="row">
+                    <div className="col-lg-6">
+                        <h4 className="title text-danger">{message}</h4>
+                        <hr className="colorgraph"/>
+                        <p>При відображенні сторінки, виникла момилка сервера. Можливо дана сторінка застаріла. 
+                        Почніть з <a href={config.host}>головної</a> сторінки. Якщо помилка буде продовжуватись, дайте нам 
+                        знати будь-яким із способів:</p>
+                        <ul>
+                          <li>написавши листа на info@pandarun.com.ua</li>
+                          <li>в групі Facebook</li>
+                          <li>створивши тікет на GitHub</li>
+                        </ul>
+                    </div>
+                    <div className="col-lg-6">
+                        <img src={config.host + "/img/500.png"} alt="server error" className="pull-right"/>
+                    </div>
+                </div>
+            </div>
+
+        );
+      }
         return (
             <div className="container page-wrapper" itemScope itemType="http://schema.org/SportsEvent">
                 <ol className="breadcrumb" itemScope itemType="http://schema.org/BreadcrumbList">
@@ -125,6 +156,7 @@ const ResultList = React.createClass({
                             <th>Стартовий номер</th>
                             <th>Учасник</th>
                             <th>Стать</th>
+                            <th>Результат</th>
                             {laps}
                         </tr>
                     </thead>
@@ -155,27 +187,19 @@ const ResultRows = React.createClass({
             if (result.sex === 'm') sex = 'чол.';
             if (result.sex === 'f') sex = 'жін.';
             let values = result.laps.map((lap) => {
-              if (lap.time === 'n/a') {
-                return (
-                  <td><span className="n-a">N/A</span></td>
-                );
-              } else {
-                if (this.props.tab === 2) {
-                  return (
-                    <td>
-                      {lap.time}
-                      <CellStat data={lap} laps={result.laps.length}/>
-                    </td>
-                  );
-                } else {
-                  return (
-                    <td>
-                      {lap.time}
-                    </td>
-                  );
-                }  
-              }
+              const cellstat = (lap.time !== 'n/a') && (this.props.tab === 2)
+                ? <CellStat data={lap} laps={result.laps.length}/>
+                : null;
+              return (
+                <td>
+                  <span className={classNames({"n-a": lap.time === 'n/a'})}>
+                    {lap.time}
+                  </span>  
+                  {cellstat}
+                </td>
+              );  
             });
+            const totalResult = 'n/a';
             return (
                 <tr>
                     <td>{result.rank}</td>
@@ -189,6 +213,11 @@ const ResultRows = React.createClass({
                       </span>  
                     </td>
                     <td>{sex}</td>
+                    <td>
+                      <span className={classNames({"n-a": totalResult === 'n/a'})}>
+                        {totalResult}
+                      </span>
+                    </td>
                     {values}
                 </tr>
             );

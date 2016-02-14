@@ -8,6 +8,8 @@ import Categories from './actions/Categories';
 import CategoryStore from './stores/competition/CategoryStore';
 import Results from './actions/Results';
 import ResultsStore from './stores/competition/ResultsStore';
+import Profile from './actions/Profile';
+import ProfileStore from './stores/ProfileStore';
 
 export default class extends Flux {
     constructor() {
@@ -25,5 +27,8 @@ export default class extends Flux {
 
         this.createActions('results', Results);
         this.createStore('results', ResultsStore, this);
+
+        this.createActions('profile', Profile);
+        this.createStore('profile', ProfileStore, this);
     }
 }
