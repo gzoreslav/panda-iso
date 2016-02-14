@@ -15,6 +15,12 @@ const items = [
     label: 'Учасники',
     name: 'competitors',
     link: config.host + '/competitors',
+    enabled: true
+  },
+  {
+    label: 'Статистика',
+    name: 'statistic',
+    link: config.host + '/statistic',
     enabled: false
   },
   {

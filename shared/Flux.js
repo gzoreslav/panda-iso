@@ -10,6 +10,8 @@ import Results from './actions/Results';
 import ResultsStore from './stores/competition/ResultsStore';
 import Profile from './actions/Profile';
 import ProfileStore from './stores/ProfileStore';
+import Competitors from './actions/Competitors';
+import CompetitorsStore from './stores/CompetitorsStore';
 
 export default class extends Flux {
     constructor() {
@@ -24,6 +26,9 @@ export default class extends Flux {
 
         this.createActions('categories', Categories);
         this.createStore('category', CategoryStore, this);
+
+        this.createActions('competitors', Competitors);
+        this.createStore('competitors', CompetitorsStore, this);
 
         this.createActions('results', Results);
         this.createStore('results', ResultsStore, this);
