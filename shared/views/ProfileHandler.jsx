@@ -1,17 +1,21 @@
 import React from 'react';
-import Flux from 'flummox/component';
 import Profile from '../components/Profile.jsx';
 import {Facebook} from '../mixins/social/Facebook.js';
+
 
 const ProfileHandler = React.createClass({
     mixins: [
         Facebook
     ],
+    componentDidMount() {
+        this.checkStatus();
+    },
     getInitialState() {
         return {
             status: 'unknown',
-            loading: true
-        }
+            loading: false,
+            data: {}
+        };
     },
     render() {
         return (
@@ -30,10 +34,11 @@ const ProfileHandler = React.createClass({
                 </ol>
                 <h4 className="title text-danger">Мій Профайл</h4>
                 <hr className="colorgraph"/>
-                    <Profile
-                        status={this.state.status}
-                        loading={this.state.loading}
-                    />
+                <Profile 
+                    status={this.state.status}
+                    data={this.state.data}
+                    loading={this.state.loading}
+                />
             </div>
         );
     }

@@ -15,9 +15,10 @@ class ProfileActions extends Actions {
         });
     }
 
-    getProfileFacebook(id) {
+    getProfileFacebook(data) {
         return new Promise((resolve, reject) => {
-            request.get(`${API_HOST}/api/users/facebook/${id}`)
+            request.post(`${API_HOST}/api/users/facebook`)
+                .send(data)
                 .end((error, response) => {
                     if (error) return reject(error);
                     resolve(response.body);

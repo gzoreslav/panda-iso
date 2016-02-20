@@ -20,7 +20,7 @@ const Competition = React.createClass({
                     </li>
                     <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
                       <a itemProp="item" href={config.host + "/competitions"}>
-                        <span itemProp="name">Змагання</span>
+                        <span itemProp="name">Календар</span>
                       </a>
                     </li>
                     <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="active">
@@ -49,7 +49,7 @@ const Info = React.createClass({
        const classString = 'compettition-type compettition-type-' + this.props.data.competition_type;
        return (
            <div>
-               <img src={'/img/events-logo/' + this.props.data.logo}/><br/>
+               <img src={'/img/events-logo/' + (this.props.data.logo ? this.props.data.logo : 'default.png')}/><br/>
                <table className="table table-striped table-bordered">
                <tbody>
                    <tr>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Router from 'react-router';
+import Flux from '../Flux.js';
 import {Button} from 'react-bootstrap';
 import {Facebook} from '../mixins/social/Facebook.js';
 
@@ -23,6 +24,18 @@ const SocialLogin = React.createClass({
             loading: nextProps.loading
         });
     },
+    registerProfile(data) {
+        console.log('reg profile');
+        let profileActions = this.flux.getActions('profile');
+        try {
+            profileActions.getProfileFacebook(data);
+        } catch(error) {
+            console.log(error);
+        }
+    },
+    componentWillMount() {
+        this.flux = new Flux();
+    },
     render() {
     	if ((this.state.status === 'connected') && !this.state.loading) {
     		this.context.router.transitionTo('/profile');
@@ -30,7 +43,7 @@ const SocialLogin = React.createClass({
         return (
         	<div>
         		<h4>Вам необхідно авторизуватись через одну із соцмереж:</h4>
-				<Button onClick={this.login}>Facebook</Button>
+				<Button onClick={this.doLogin}>Facebook</Button>
 			</div>	
         );
     }

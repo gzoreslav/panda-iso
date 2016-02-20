@@ -14,29 +14,27 @@ const Profile = React.createClass({
 	mixins: [
 		Facebook
 	],
-	getInitialState() {
-		return {
-            status: this.props.status,
-			loading: this.props.loading,
-			data: {}
-		};
-        if ((this.props.status === 'connected') && !this.props.loading) {
-            this.fetchData(this.fetchProfile);
-        }
-	},
+    getInitialState() {
+        return {
+            status: 'unknown',
+            loading: true,
+            data: {}
+        };
+    },
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            status: nextProps.status,
-            loading: nextProps.loading
-        });
-        if ((nextProps.status === 'connected') && !nextProps.loading) {
-            this.fetchData(this.fetchProfile);
-        }
+        this.setState({...nextProps}, 
+            () => {
+                console.log(this.state);
+                if (!nextProps.loading && (nextProps.status === 'connected')) {
+                    this.fetchProfile();
+                }
+            }
+        );
     },
     fetchProfile() {
         let profileActions = this.flux.getActions('profile');
         try {
-            profileActions.getProfileFacebook(this.state.data.id, this.state.data);
+            profileActions.getProfileFacebook(this.state.data);
         } catch(error) {
             console.log(error);
         }
@@ -57,7 +55,7 @@ const Profile = React.createClass({
                         </FluxComponent>
                     </div>
                     <div className="col-xs-2">
-                        <Button bsStyle="danger" className="pull-right" onClick={this.logout}>Bийти</Button>
+                        <Button bsStyle="danger" className="pull-right" onClick={this.doLogout}>Bийти</Button>
                     </div>
                 </div>        
             </Loading>    

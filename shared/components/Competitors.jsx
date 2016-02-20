@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import Loading from './Loader.jsx';
 import {Nav, NavItem, Input} from 'react-bootstrap';
+import {naFormatter, dateFormatter, sexFormatter} from '../mixins/formatter';
 
 const Competitors = React.createClass({
     getInitialState() {
@@ -26,8 +27,9 @@ const Competitors = React.createClass({
                                     <th>Ім&apos;я</th>
                                     <th>Нікнейм</th>
                                     <th>Стать</th>
+                                    <th>Дата Народження</th>
                                     <th>Локація</th>
-                                    <th>Команда</th>
+                                    <th>Клуб</th>
                                     <th>Змагань</th>
                                 </tr>
                             </thead>
@@ -41,16 +43,22 @@ const Competitors = React.createClass({
 });
 
 var Rows = React.createClass({
+    mixins: [
+        naFormatter,
+        dateFormatter,
+        sexFormatter
+    ],
     render() {
         const rows = this.props.data
             .map(competitor => 
                 <tr>
-                    <td>{competitor.firstname}</td>
+                    <td>{`${competitor.firstname} ${competitor.lastname}`}</td>
                     <td>{competitor.nickname}</td>
-                    <td>{competitor.sex}</td>
+                    <td>{this.formatters.sex(competitor.sex)}</td>
+                    <td>{this.formatters.formatDate(competitor.birthday)}</td>
                     <td>{competitor.location}</td>
                     <td>{competitor.team}</td>
-                    <td>n/a</td>
+                    <td>{this.formatters.na('n/a')}</td>
                 </tr>
             );
         return (
