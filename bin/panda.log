@@ -1,0 +1,6 @@
+[?25h[0G[K
+> panda-run-isomorphic@0.0.1 start /root/panda-iso
+> babel-node --stage 0 ./bin/www
+
+[?25l[0G
+[?25h[?25h[1A[0G[K[?25h[0G[K80

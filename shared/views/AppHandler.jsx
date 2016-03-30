@@ -1,30 +1,48 @@
 import React from 'react';
+import FluxComponent from 'flummox/component';
+import {Glyphicon} from 'react-bootstrap';
+import ScrollToTop from 'react-scroll-up';
 import {RouteHandler} from 'react-router';
-import {Header, Footer} from './common/index.jsx';
-import Flux from 'flummox/component';
+import Header from '../components/header.jsx';
+import Footer from '../components/footer.jsx';
+import Messages from '../components/Messages.jsx';
+import {staticActions} from '../mixins/fluxActions';
+import {staticAuth} from '../mixins/auth';
 
-class AppHandler extends React.Component {
+
+const Handler = React.createClass({
     render() {
-    	if (typeof document !== 'undefined') {
-    		(function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s);
-                js.id = id;
-                js.src = "//connect.facebook.net/uk_UA/sdk.js#xfbml=1&version=v2.5&appId=953645997999606";
-                fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
-        }    
         return (
             <div itemScope itemType="http://schema.org/Organization">
-                <Flux connectToStores={['profile']}>
+                <FluxComponent connectToStores={['myprofile']}>
                     <Header/>
-                </Flux>
-                <RouteHandler {...this.props} key={this.props.pathname} />
+                </FluxComponent>
+                <FluxComponent connectToStores={['messages']}>
+                    <Messages/>
+                </FluxComponent>
+                <RouteHandler {...this.props} key={this.props.pathname}/>
                 <Footer/>
+                <ScrollToTop
+                    showUnder={160}
+                    style={{position: 'fixed', bottom: 50, right: 30, cursor: 'pointer', transitionDuration: '0.2s',
+                        transitionTimingFunction: 'linear', transitionDelay: '0s', backgroundColor: '#eee',
+                        padding: '10px'
+                    }}
+                >
+                    <span>Нагору <Glyphicon glyph="triangle-top"/></span>
+                </ScrollToTop>
             </div>
         );
     }
-}
+});
 
-export default AppHandler;
+Handler.routerWillRun = async ({flux, state}) => {
+    const actions = staticActions(flux);
+    actions.messages.hide();
+    const auth = staticAuth();
+    if (auth.logged) {
+        actions.myprofile.getProfile(flux, auth.id)
+    }
+};
+
+export default Handler;

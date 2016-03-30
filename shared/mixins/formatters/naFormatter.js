@@ -7,7 +7,7 @@ export const naFormatter = {
         _.merge(this, {
             formatters: {
                 na(value) {
-                    return (value === 'n/a') || (value === 'undefined') ? <span className="n-a">{value}</span> : value;
+                    return (value === 'n/a') || (value == undefined) ? <span className="n-a">n/a</span> : value;
                 }
             }
         });

@@ -69,25 +69,20 @@ app.use(async function (req, res, next) {
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>PandaRUN v.0.0.1 - Каталог результатів змагань</title>
+                <title>PandaRUN v.0.1.0 - Каталог результатів змагань</title>
                 <link rel="stylesheet" href="/css/index.css" />
-                <link rel="stylesheet" href="/css/PictureShow.css" />
                 <link rel="shortcut icon" href="/img/favicon.png" type="image/png" />
+                <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic,cyrillic-ext' rel='stylesheet' type='text/css' />
+                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
                 <meta name="keywords" content="competitions, sport, run, running, cycle, bicycle, marathon,
                 halfmarathon, brevet, спорт, змагання, результати, марафон, півмарафон, бревет, велосипед, біг, МТБ" >
                 <meta name="description" content="PandaRUN | каталог результатів змагань - біг, велосипед та інші види
                 змагань на час. Реєстрація, профайл учасника, можливість ділитись результатами в соцмережах, тощо.">
                 <meta name="google-site-verification" content="QoOlWVXlQSt1cWg66STcs6J1cOfcUOOVPSs92hktAL4" />
-                <meta property="fb:app_id" content="953645997999606">
             </head>
             <body>
-                <div id="fb-root"></div>
                 <div id="app">${html}</div>
-                <script type="text/javascript" src="/js/bundle.js"></script>
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <script type="text/javascript" src="/js/bundle.min.js"></script>
             </body>
         </html>`
     );

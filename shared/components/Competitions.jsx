@@ -1,7 +1,8 @@
 import React from 'react';
 import moment from 'moment';
+import _ from 'lodash';
 import Loading from './Loader.jsx';
-import {Nav, NavItem, Input} from 'react-bootstrap';
+import {Nav, NavItem, Input, Glyphicon, Col, Row} from 'react-bootstrap';
 
 const NavBox = React.createClass({
     handleSelect(selectedKey) {
@@ -31,7 +32,7 @@ const Toolbar = React.createClass({
     },
     render() {  
         return (
-            <div className="col-lg-4">
+            <Col lg={4}>
                 <NavBox tab='tab' onToggleNav={this.handleNav}/>
                 <br/>
                 <Input
@@ -43,12 +44,12 @@ const Toolbar = React.createClass({
                       value={this.props.filter.title}
                       onChange={this.handleChange}/>
                 <Input type="checkbox" label="Тільки з результатами" checked />
-            </div>  
+            </Col>
         );
     }
 });
 
-const Competitions = React.createClass({
+export default React.createClass({
     getInitialState() {
         return {
           loading: false,  
@@ -68,17 +69,17 @@ const Competitions = React.createClass({
     },
     render() {  
         return (
-            <div className="row">
+            <Row>
                 <Loading loading={this.props.loading || this.state.loading}>
                     <CompetitionRows 
-                        data={this.props.data.data}
+                        data={_.get(this.props, 'data.data', [])}
                         filter={this.state.filter}
                         onRendered={this.rendered}/>
                     <Toolbar 
                         onUserInput={this.handleUserInput}
                         filter={this.state.filter}/> 
                 </Loading> 
-            </div>
+            </Row>
         );
     }
 });
@@ -95,19 +96,27 @@ var CompetitionRows = React.createClass({
             const classString = 'compettition-type compettition-type-' + competition.type_id;
             const link = 'competitions/'+competition.id;
             const logo = competition.logo || 'default.png';
+            const url = competition.url ?
+                <div>
+                    <Glyphicon style={{width: '40px'}} glyph="link"/>
+                    <a target="_blank" itemProp="url" href={competition.url}>{competition.url}</a><br/>
+                </div>
+                : null;
             return (
-                <div className="row" itemType="http://schema.org/SportsEvent">
+                <div key={competition.id} className="row" itemType="http://schema.org/SportsEvent">
                     <div className="event-logo col-lg-3">
-                        <img src={'/img/events-logo/' + logo}/>
+                        <img className="img-thumbnail" src={'/img/events-logo/' + logo}/>
                     </div>
                     <div className="event-info col-lg-9">
                         <h3><a href={link}><span itemProp="name">{competition.title}</span></a></h3>
                         <h5>{competition.type_title}</h5>
                         <meta itemProp="startDate" content={moment(competition.start_date).format('YYYY-MM-DD')}/>
-                        <span className="fa fa-calendar"/> <span>{moment(competition.start_date).format('DD/MM/YY')}</span><br/>
+                        {url}
+                        <Glyphicon style={{width: '40px'}} glyph="calendar"/>{moment(competition.start_date).format('YYYY-MM-DD')}<br/>
                         <div itemProp="location" itemScope itemType="http://schema.org/Place">
                             <span itemProp="address" itemScope itemType="http://schema.org/PostalAddress">
-                                <span className="fa fa-map-marker"/> <span itemProp="addressLocality">{competition.location}</span>
+                                <Glyphicon style={{width: '40px'}} glyph="map-marker"/>
+                                <span itemProp="addressLocality">{competition.location}</span>
                             </span>
                         </div>        
                         <h5>Учасників: {competition.competitors.count}</h5>
@@ -118,34 +127,24 @@ var CompetitionRows = React.createClass({
             );
         });
         return (
-            <div className="col-lg-8">
+            <Col lg={8}>
                 {competitionsRows}
-            </div>
+            </Col>
         );
     }
 });
 
 var CompetitionCategories = React.createClass({
     render: function() {
-        let categories = (<em>немає категорій</em>);
-        if (this.props.data.length > 0) {
-            categories = [];
-            for (var i = 0; i < this.props.data.length; i++) {
-                const link = 'competitions/' +  this.props.data[i].id_competition + '/category/' + this.props.data[i].id;
-                let divider = ', ';
-                if (i === (this.props.data.length - 1)) {
-                    divider = '';
-                }
-                categories.push(<em><a href={link}>{this.props.data[i].title}</a>{divider}</em>);
-            }
-        }
-        return (
-            <span>
-                Категорії: {categories}
-            </span>
-        );
+        const categories = this.props.data.length > 0 ?
+            _(this.props.data).map((c, i) =>
+                <span key={c.id}>
+                    <a href={`competitions/${c.id_competition}/categories/${c.id}`}>{c.title}</a>
+                    {i < this.props.data.length ? ', ' : null}
+                </span>
+            )
+            .value()
+            : <em>немає категорій</em>;
+        return <span>Категорії: {categories}</span>;
     }
 });
-
-
-export default Competitions;

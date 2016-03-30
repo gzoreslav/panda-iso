@@ -1,52 +1,19 @@
 import {Actions} from 'flummox';
-import request from 'superagent';
+import {GET} from './api.js';
 
-const API_HOST = 'http://188.166.47.232:3004';
 
-class CompetitionsActions extends Actions {
-    getCompetitions() {
-        return new Promise((resolve, reject) => {
-            request.get(`${API_HOST}/api/competitions`)
-                .end((error, response) => {
-                    if (error) return reject(response);
-                    resolve(response.body);
-                });
-        });
+export default class extends Actions {
+    getCompetitions(flux) {
+        return GET(flux, '/api/competitions');
     }
 
-    getCompetition(id) {
-        return new Promise((resolve, reject) => {
-            request.get(`${API_HOST}/api/competitions/${id}`)
-                .end((error, response) => {
-                    if (error) return reject(error);
-                    resolve(response.body);
-                });
-        });
+    getCompetition(flux, id) {
+        return GET(flux, `/api/competitions/${id}`)
     }
 
-    getActiveTasks() {
+    /*deleteCompletedTasks() {
         return new Promise((resolve, reject) => {
-            request.get(`${API_HOST}/api/tasks/active`)
-                .end((error, response) => {
-                    if (error) return reject(error);
-                    resolve(response.body);
-                });
-        });
-    }
-
-    getCompletedTasks() {
-        return new Promise((resolve, reject) => {
-            request.get(`${API_HOST}/api/tasks/completed`)
-                .end((error, response) => {
-                    if (error) return reject(error);
-                    resolve(response.body);
-                });
-        });
-    }
-
-    deleteCompletedTasks() {
-        return new Promise((resolve, reject) => {
-            request.del(`${API_HOST}/api/tasks/completed`)
+            request.del(`${config.api}/api/tasks/completed`)
                 .end((error, response) => {
                     if (error) return reject(error);
                     resolve(response.body);
@@ -56,7 +23,7 @@ class CompetitionsActions extends Actions {
 
     createTask(task) {
         return new Promise((resolve, reject) => {
-            request.post(`${API_HOST}/api/tasks`)
+            request.post(`${config.api}/api/tasks`)
                 .send(task)
                 .end((error, response) => {
                     if (error) return reject(error);
@@ -67,7 +34,7 @@ class CompetitionsActions extends Actions {
 
     deleteTask(id) {
         return new Promise((resolve, reject) => {
-            request.del(`${API_HOST}/api/tasks/${id}`)
+            request.del(`${config.api}/api/tasks/${id}`)
                 .end((error, response) => {
                     if (error) return reject(error);
                     resolve(response.body);
@@ -77,7 +44,7 @@ class CompetitionsActions extends Actions {
 
     toggleTask(id, completed) {
         return new Promise((resolve, reject) => {
-            request.put(`${API_HOST}/api/tasks/${id}`)
+            request.put(`${config.api}/api/tasks/${id}`)
                 .send({completed})
                 .end((error, response) => {
                     if (error) return reject(error);
@@ -88,14 +55,12 @@ class CompetitionsActions extends Actions {
 
     toggleAll(completed) {
         return new Promise((resolve, reject) => {
-            request.put(`${API_HOST}/api/tasks`)
+            request.put(`${config.api}/api/tasks`)
                 .send({completed})
                 .end((error, response) => {
                     if (error) return reject(error);
                     resolve(response.body);
                 });
         });
-    }
+    }*/
 }
-
-export default CompetitionsActions;

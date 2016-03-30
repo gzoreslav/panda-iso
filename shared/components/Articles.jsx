@@ -1,37 +1,38 @@
 import React from 'react';
 import marked from 'marked';
 import moment from 'moment';
+import _ from 'lodash';
+import Loading from './Loader.jsx';
 
-class Articles extends React.Component {
 
+export default React.createClass({
     render() {
         return (
             <div className="articles">
-                <ArticleList data={this.props.resp.data} />
+                <Loading loading={this.props.loading}>
+                    <ArticleList data={_.get(this.props, 'data.data', [])} />
+                </Loading>
             </div>
         );
     }
-}
+});
 
-var ArticleList = React.createClass({
+const ArticleList = React.createClass({
     rawMarkup: function(text) {
-        let rawMarkup = marked(text, {sanitize: true});
-        return { __html: rawMarkup };
+        return {__html: marked(text, {sanitize: true})};
     },
     render: function() {
-        var items = this.props.data.map((article) => {
-            return (
-                <div className="article" itemScope itemType="http://schema.org/Article">
-                    <h3 className="title text-danger" itemProp="headline">{article.title}</h3>
-                    <small className="text-info">
-                        <span className="fa fa-calendar"/> {moment(article.posted).format('MMMM Do YYYY')}
-                        <meta itemProp="datePublished" content={moment(article.posted).format('YYYY-MM-DD')}/>    
-                    </small>
-                    <hr/>
-                    <div itemProp="articleBody" dangerouslySetInnerHTML={this.rawMarkup(article.descr)}/>
-                </div>
-            );
-        });
+        const items = this.props.data.map(article =>
+            <div key={article.id} className="article" itemScope itemType="http://schema.org/Article">
+                <h3 className="title text-danger" itemProp="headline">{article.title}</h3>
+                <small className="text-info">
+                    <span className="fa fa-calendar"/> {moment(article.posted).format('MMMM Do YYYY')}
+                    <meta itemProp="datePublished" content={moment(article.posted).format('YYYY-MM-DD')}/>
+                </small>
+                <hr/>
+                <div itemProp="articleBody" dangerouslySetInnerHTML={this.rawMarkup(article.descr)}/>
+            </div>
+        );
         return (
             <div>
                 {items}
@@ -39,6 +40,3 @@ var ArticleList = React.createClass({
         );
     }
 });
-
-
-export default Articles;

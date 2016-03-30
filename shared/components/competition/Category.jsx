@@ -1,438 +1,114 @@
 import React from 'react';
+import {RouteHandler} from 'react-router';
 import moment from 'moment';
-import classNames from 'classnames';
+import _ from 'lodash';
 import config from '../../../config/default.js';
-import {Input, Button, Nav, NavItem} from 'react-bootstrap';
-import Sharer from '../Sharer.jsx';
+import {Input, Button, Nav, NavItem, Row, Col, Glyphicon, Thumbnail} from 'react-bootstrap';
+import Loading from '../Loader.jsx';
+import Breadcrumbs from '../breadcrumbs.jsx';
 
-const Category = React.createClass({
-    getInitialState() {
-        return {
-          filter: {
-            firstname: '',
-            lastname: '',
-            sex: 'all'
-          },
-          tab: 1
-        }
-    },
-    componentWillMount() {
-        if (!this.props.error) {
-          this.setState({ 
-            data: this.props.resp.data,
-            results: this.props.result
-          });
-        }  
-    },
-    handleUserInput: function(filter) {
-        this.setState({
-            filter: filter
-        });
-    },
-    handleNav(tab) {
-        this.setState({
-            tab: tab
-        });
-    },
-    clearFilters() {
-        this.setState({
-            filter: {
-              firstname: '',
-              lastname: '',
-              sex: 'all'
-            }
-        });
+
+export default React.createClass({
+    componentWillReceiveProps(nextProps) {
+        this.setState(nextProps);
     },
     render() {
-      if (this.props.error) {
-        let message = `${this.props.resp.status} ${this.props.resp.statusText}`;
-        if (this.props.resp.status === 500) {
-          message = 'Помилка сервера';
-        } 
-        return (
-            <div className="container page-wrapper">
-                <div className="row">
-                    <div className="col-lg-6">
-                        <h4 className="title text-danger">{message}</h4>
-                        <hr className="colorgraph"/>
-                        <p>При відображенні сторінки, виникла момилка сервера. Можливо дана сторінка застаріла. 
-                        Почніть з <a href={config.host}>головної</a> сторінки. Якщо помилка буде продовжуватись, дайте нам 
-                        знати будь-яким із способів:</p>
-                        <ul>
-                          <li>написавши листа на info@pandarun.com.ua</li>
-                          <li>в групі Facebook</li>
-                          <li>створивши тікет на GitHub</li>
-                        </ul>
-                    </div>
-                    <div className="col-lg-6">
-                        <img src={config.host + "/img/500.png"} alt="server error" className="pull-right"/>
-                    </div>
-                </div>
-            </div>
-
-        );
-      }
         return (
             <div className="container page-wrapper" itemScope itemType="http://schema.org/SportsEvent">
-                <ol className="breadcrumb" itemScope itemType="http://schema.org/BreadcrumbList">
-                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                      <a itemProp="item" href={config.host}>
-                        <span itemProp="name">Головна</span>
-                      </a>
-                    </li>
-                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                      <a itemProp="item" href={config.host + "/competitions"}>
-                        <span itemProp="name">Змагання</span>
-                      </a>
-                    </li>
-                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                      <a itemProp="item" href={config.host + "/competitions/" + this.state.data.id_competition}>
-                        <span itemProp="name">{this.state.data.competition_title}</span>
-                      </a>
-                    </li>
-                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem" className="active">
-                      <span itemProp="item">
-                        <span itemProp="name">{this.state.data.title}</span>
-                      </span>  
-                    </li>
-                </ol>
-                <Summary 
-                  data={this.state.data}
-                  results={this.state.results}/>
+                <Breadcrumbs
+                    crumbs={[
+                        {link: '/', label: 'Головна'},
+                        {link: '/competitions', label: 'Календар'},
+                        {link: `/competitions/${_.get(this.state, 'data.data.id_competition')}`,
+                            label: _.get(this.state, 'data.data.competition_title')},
+                        {label: _.get(this.state, 'data.data.title')}
+                ]}/>
+                <Loading loading={this.props.loading || this.state.loading}>
+                    <Info data={_.get(this.state, 'data.data', {})}/>
+                </Loading>
                 <hr className="colorgraph"/>
-                <FilterBox 
-                  filter={this.state.filter}
-                  onUserInput={this.handleUserInput} 
-                  onClearFilters={this.clearFilters}/>
-                <NavBox
-                  tab={this.state.tab}
-                  onToggleNav={this.handleNav}/>  
-                <div className="row">
-                    <div className="col-sm-12">
-                        <ResultList 
-                          data={this.state.data} 
-                          results={this.state.results} 
-                          filter={this.state.filter}
-                          tab={this.state.tab}/>
-                    </div>
-                </div>
+                <Tabs data={_.get(this.state, 'data.data', {})}/>
+                <RouteHandler
+                    {...this.props}
+                    data={_.get(this.state, 'data.data', {})}
+                    key={this.props.pathname}/>
             </div>
         );
     }
 });
 
-const NavBox = React.createClass({
-    handleSelect(selectedKey) {
-      this.props.onToggleNav(selectedKey);
-    },
+const Info = React.createClass({
     render() {
-      return (
-        <Nav bsStyle="tabs" activeKey={this.props.tab} onSelect={this.handleSelect}>
-          <NavItem eventKey={1} href="#summary">Сумарно</NavItem>
-          <NavItem eventKey={2} href="#details">Детально</NavItem>
-          <NavItem eventKey={3} href="#graphs" disabled>Графіки</NavItem>
-        </Nav>
-      )
-    }
-});      
-
-const ResultList = React.createClass({
-    render() {
-        let i = 0;
-        const laps = this.props.data.laps.data.map((lap) => {
-            i++;
-            const lapName = (this.props.data.show_laps !== 0) ? (<span>коло {i}<br/></span>) : null;
-            return (
-              <th>{lapName}{lap.distance.toFixed(2)} км</th>
-            );
-        });
+        const circles = this.props.data.show_laps ?
+            <div>
+                <Glyphicon style={{width: '40px'}} glyph="repeat"/>
+                {this.props.data.laps ? this.props.data.laps.count : 'кількість кіл не вказана'}
+            </div>
+            : null;
+        const img = this.props.data.logo
+            ? <Thumbnail src={`/img/events-logo/${this.props.data.logo}`}/>
+            : <Thumbnail src="/img/events-logo/default.png"/>;
         return (
             <div>
-                <h5>Результати</h5>
-                <table className="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Місце</th>
-                            <th>Стартовий номер</th>
-                            <th>Учасник</th>
-                            <th>Стать</th>
-                            <th>Результат</th>
-                            {laps}
-                        </tr>
-                    </thead>
-                    <ResultRows
-                      info={this.props.data} 
-                      data={this.props.results.data}
-                      filter={this.props.filter}
-                      tab={this.props.tab}/>
-                </table>
+                <Row>
+                    <Col lg={2}>
+                        {img}
+                    </Col>
+                    <Col lg={8}>
+                        <h4 className="title text-danger" itemProp="name">{this.props.data.competition_title}</h4>
+                        <h5>Категорія: {this.props.data.title}</h5>
+                    </Col>
+                    <Col lg={2}>
+                        <Glyphicon style={{width: '40px'}} glyph="calendar"/>
+                        {moment(this.props.data.start_date).format('YYYY-MM-DD')}<br/>
+                        <Glyphicon style={{width: '40px'}} glyph="map-marker"/>
+                        {this.props.data.location}<br/>
+                        <Glyphicon style={{width: '40px'}} glyph="resize-horizontal"/>
+                        {this.props.data.dist ? `${this.props.data.dist.toFixed(2)}км` : 'дистанція не вказана'}<br/>
+                        {circles}
+                    </Col>
+                </Row>
             </div>
         );
     }
 });
 
-const ResultRows = React.createClass({
-    render: function() {
-        var rows = this.props.data
-          .filter((result) => {
-            const f = new RegExp('.*' + this.props.filter.firstname.toLowerCase() + '.*', 'ig');
-            const firstname = f.test(result.firstname);
-            const l = new RegExp('.*' + this.props.filter.lastname.toLowerCase() + '.*', 'ig');
-            const lastname = l.test(result.lastname);
-            const sex = (this.props.filter.sex === 'all') ? true : (this.props.filter.sex === result.sex);
-            return firstname && lastname && sex;
-          })
-          .map((result) => {
-            let sex = '';
-            if (result.sex === 'm') sex = 'чол.';
-            if (result.sex === 'f') sex = 'жін.';
-            let values = result.laps.map((lap) => {
-              const cellstat = (lap.time !== 'n/a') && (this.props.tab === 2)
-                ? <CellStat data={lap} laps={result.laps.length}/>
-                : null;
-              return (
-                <td>
-                  <span className={classNames({"n-a": lap.time === 'n/a'})}>
-                    {lap.time}
-                  </span>  
-                  {cellstat}
-                </td>
-              );  
-            });
-            const totalResult = 'n/a';
-            return (
-                <tr>
-                    <td>{result.rank}</td>
-                    <td>{result.number}</td>
-                    <td>
-                      <span itemProp="performers" itemScope itemType="http://schema.org/Person">
-                        <a href="#"><span itemProp="name">{result.firstname + ' ' + result.lastname}</span></a>
-                        <Sharer
-                          info={this.props.info}
-                          result={result}/>
-                      </span>  
-                    </td>
-                    <td>{sex}</td>
-                    <td>
-                      <span className={classNames({"n-a": totalResult === 'n/a'})}>
-                        {totalResult}
-                      </span>
-                    </td>
-                    {values}
-                </tr>
-            );
-        });
-        return (
-            <tbody>{rows}</tbody>
-        );
-    }
-});
+const tabs = [{
+    name: 'results',
+    label: 'Результати'
+}, {
+    name: 'members',
+    label: 'Учасники'
+}, {
+    name: 'catstatistic',
+    label: 'Статистика'
+}];
 
-const CellStat = React.createClass({
-    render() {
-      let increase = null;
-      if (this.props.data.increase === true) {
-        increase = (
-          <span className="fa fa-arrow-up"/>
-        );
-      }  
-      if (this.props.data.increase === false) {
-        increase = (
-          <span className="fa fa-arrow-down"/>
-        );
-      }  
-      const total = (this.props.data.total === undefined) ? null :
-      (
-          <div className="cell-values total">
-            <h5>Сумарно</h5>
-            <small>шв-сть: {this.props.data.total.speed}</small><br/>
-            <small>темп: {this.props.data.total.pace}</small>
-          </div>
-      );
-      const currPos = (this.props.data.position === 'n/a') ? null :
-      (
-          <div className="cell-values positions">
-            <small>позиція: {this.props.data.position}</small> {increase}
-          </div>
-      );
-      const currSpeed = (this.props.data.speed === 'n/a') ? null :
-      (
-          <div className="cell-values pace-spped">
-            <small>шв-сть: {this.props.data.speed}</small><br/>
-            <small>темп: {this.props.data.pace}</small>
-          </div>
-      );
-      let extrem = null;
-      if (this.props.data.highest) {
-        extrem = (
-          <span className="rabbit"/>
-        );
-      }
-      if (this.props.data.lowest) {
-        extrem = (
-          <span className="turtle"/>
-        );
-      }
-      if (this.props.laps > 1) {
-        return (
-          <div>
-            {currSpeed}
-            {currPos}
-            {extrem}
-            {total}
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            {total}
-          </div>
-        );
-      }  
-    }
-});      
-
-const SmallStat = React.createClass({
-    render() {
-        const male = this.props.results.data.filter((item) => item.sex === 'm').length;
-        const female = this.props.results.data.filter((item) => item.sex === 'f').length;
-        return (
-          <table className="table table-striped table-bordered">
-            <tbody>
-              <tr>
-                <td>Довжина дистанції:</td>
-                <td>{this.props.data.dist.toFixed(2)}км</td>
-              </tr>
-              <tr>
-                <td>Кількість учасників:</td>
-                <td>{this.props.results.data.length}</td>
-              </tr>
-              <tr>
-                <td>Чоловіків:</td>
-                <td>{male}</td>
-              </tr>
-              <tr>
-                <td>Жінок:</td>
-                <td>{female}</td>
-              </tr>
-            </tbody>    
-          </table>
-        );    
-    }
-});
-
-const FilterBox = React.createClass({
-    handleChange() {
-        this.props.onUserInput({
-          firstname: this.refs.firstname.getValue(),
-          lastname: this.refs.lastname.getValue(),
-          sex: this.refs.sex.getValue()
-        });
-    },
-    clearFilters() {
-      this.props.onClearFilters()
+const Tabs = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.func
     },
     render() {
+        const routes = this.context.router.getCurrentRoutes();
+        const link = `/competitions/${this.props.data.id_competition}/categories/${this.props.data.id}`;
+        const items = _(tabs)
+            .map((tab, i) =>
+                <NavItem
+                    key={tab.name}
+                    eventKey={tab.name}
+                    href={`${link}/${tab.name}`}
+                    active={(routes[5] && routes[5].name) ? routes[5].name === tab.name : i === 0}
+                >
+                    {tab.label}
+                </NavItem>
+            )
+            .value();
         return (
-                <div className="row">
-                  <div className="col-sm-3">
-                    <Input
-                      autoFocus
-                      ref="firstname" 
-                      type="text" 
-                      label="Ім'я" 
-                      placeholder="Введіть ім'я учасника" 
-                      value={this.props.filter.firstname}
-                      onChange={this.handleChange}/>
-                  </div>    
-                  <div className="col-sm-3">
-                    <Input
-                      ref="lastname" 
-                      type="text" 
-                      label="Прізвище" 
-                      placeholder="Введіть прізвище учасника" 
-                      value={this.props.filter.lastname}
-                      onChange={this.handleChange}/>
-                  </div>  
-                  <div className="col-sm-2">
-                    <Input 
-                      ref="sex"
-                      type="select" 
-                      label="Стать" 
-                      placeholder="виберіть стать"
-                      value={this.props.filter.sex}
-                      onChange={this.handleChange}>
-                        <option value="all">всі</option>
-                        <option value="m">чоловіки</option>
-                        <option value="f">жінки</option>
-                        <option value="na">стать не зазначена</option>
-                    </Input>
-                  </div>
-                  <div className="col-sm-4">  
-                    <div className="pull-right">
-                      <Button 
-                        bsStyle="primary" 
-                        bsSize="small"
-                        onClick={this.clearFilters}>Скинути фільтри</Button>
-                    </div>
-                  </div>    
-                </div>
-        );
+            <div>
+                <Nav bsStyle="tabs" activeKey={this.props.tab} onSelect={this.handleSelect}>
+                    {items}
+                </Nav>
+            </div>
+        )
     }
 });
-
-const Summary = React.createClass({
-  getInitialState() {
-    return {show: false};
-  },
-  toggleDetails() {
-    this.setState({show: !this.state.show});
-  },
-  render() {
-    return this.state.show ? (
-      <div className="row">
-        <div className="col-sm-3">
-          <img src={'/img/events-logo/' + this.props.data.logo}/>
-        </div>  
-        <div className="col-sm-6">
-          <h3 className="title text-danger" itemProp="name">{this.props.data.competition_title}</h3>
-          <span className="title text-info"><strong>Категорія:</strong> {this.props.data.title}</span><br/>
-          <meta itemProp="startDate" content={moment(this.props.data.start_date).format('YYYY-MM-DD')}/>
-          <span className="fa fa-calendar"/> {moment(this.props.data.start_date).format('DD/MM/YY')}<br/>
-          <span itemProp="location" itemScope itemType="http://schema.org/Place">
-            <meta itemProp="name" content={this.props.data.location}/>
-            <span itemProp="address" itemScope itemType="http://schema.org/PostalAddress">
-              <span className="fa fa-map-marker"/> <span itemProp="addressLocality">{this.props.data.location}</span>
-            </span>  
-          </span>  
-        </div>  
-        <div className="col-sm-3">
-          <SmallStat 
-            data={this.props.data}
-            results={this.props.results}/>
-          <a href="#" onClick={this.toggleDetails} className="pull-right">сховати деталі <span className="fa fa-arrow-up"/></a>
-        </div>
-      </div>
-      ) : (
-      <div className="row">
-        <div className="col-sm-11">
-          <h4 className="title text-danger" itemProp="name">{this.props.data.competition_title} - {this.props.data.title} - [протокол/результати змагань]</h4>
-          <meta itemProp="startDate" content={moment(this.props.data.start_date).format('YYYY-MM-DD')}/>
-          <span className="fa fa-calendar"/> {moment(this.props.data.start_date).format('DD/MM/YY')}&nbsp;
-          <span itemProp="location" itemScope itemType="http://schema.org/Place">
-            <meta itemProp="name" content={this.props.data.location}/>
-            <span itemProp="address" itemScope itemType="http://schema.org/PostalAddress">
-              <span className="fa fa-map-marker"/> <span itemProp="addressLocality">{this.props.data.location}</span>
-            </span>  
-          </span>  
-        </div>
-        <div className="col-sm-1">
-          <img src={'/img/events-logo/' + this.props.data.logo} style={{visibility: 'hidden', height: '1px', width: '1px'}}/>
-          <a href="#" onClick={this.toggleDetails} className="pull-right">деталі <span className="fa fa-arrow-down"/></a>
-        </div>  
-      </div>  
-      );
-  }
-});
-
-export default Category;

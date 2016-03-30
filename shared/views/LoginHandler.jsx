@@ -1,8 +1,14 @@
 import React from 'react';
-import SocialLogin from '../components/SocialLogin.jsx';
+import Router from 'react-router';
 import {Facebook} from '../mixins/social/Facebook.js';
+import {Button, ButtonToolbar} from 'react-bootstrap';
+import Breadcrumbs from '../components/breadcrumbs.jsx';
 
-const ProfileHandler = React.createClass({
+
+const LoginHandler = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.func
+    },
     mixins: [
         Facebook
     ],
@@ -13,29 +19,28 @@ const ProfileHandler = React.createClass({
         }
     },
     render() {
+        const token = (typeof localStorage !== 'undefined') ? localStorage.getItem('token') : '';
+        if (token) {
+            this.context.router.transitionTo('/profile');
+        }
         return (
             <div className="container page-wrapper">
-                <ol className="breadcrumb" itemScope itemType="http://schema.org/BreadcrumbList">
-                    <li itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                        <a itemProp="item" href="/">
-                            <span itemProp="name">Головна</span>
-                        </a>
-                    </li>
-                    <li className="active" itemProp="itemListElement" itemScope itemType="http://schema.org/ListItem">
-                        <span itemProp="item">
-                            <span itemProp="name">Мій Профайл</span>
-                        </span>    
-                    </li>
-                </ol>
-                <h4 className="title text-danger">Мій Профайл</h4>
+                <Breadcrumbs
+                    crumbs={[
+                        {link: '/', label: 'Головна'},
+                        {label: 'Авторизація'}
+                ]}/>
+                <h4 className="title text-danger">Авторизація</h4>
                 <hr className="colorgraph"/>
-                <SocialLogin 
-                    status={this.state.status}
-                    loading={this.state.loading}
-                />
+                <h5>Вам необхідно авторизуватись через одну із соцмереж:</h5>
+                <ButtonToolbar>
+                    <Button bsStyle="primary" onClick={this.doLogin}>Facebook</Button>
+                    <Button bsStyle="danger" disabled>Google</Button>
+                    <Button bsStyle="info" disabled>Twitter</Button>
+                </ButtonToolbar>    
             </div>
         );
     }
 });
 
-export default ProfileHandler;
+export default LoginHandler;

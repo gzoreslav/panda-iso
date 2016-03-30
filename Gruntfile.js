@@ -1,5 +1,6 @@
 require('babel/register');
 
+
 // Обязательная обёртка
 module.exports = function(grunt) {
 
