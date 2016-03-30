@@ -1,5 +1,5 @@
 # panda-iso
-Competitions results catalog
+Local competitions results catalog
 
 ## Digital Ocen Deploy
 
