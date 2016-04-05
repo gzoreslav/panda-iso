@@ -7,6 +7,9 @@ import {naFormatter, dateFormatter, sexFormatter, roleFormatter} from '../mixins
 import auth from '../mixins/auth';
 
 export default React.createClass({
+    propTypes: {
+        loading: React.PropTypes.bool
+    },
     getInitialState() {
         return {
             loading: false,
@@ -15,7 +18,7 @@ export default React.createClass({
             },
             data: [],
             error: false
-      }
+        }
     },
     componentWillReceiveProps(nextProps) {
         this.setState({
@@ -54,7 +57,10 @@ export default React.createClass({
     }
 });
 
-var Rows = React.createClass({
+const Rows = React.createClass({
+    propTypes: {
+        data: React.PropTypes.object
+    },
     mixins: [
         naFormatter,
         dateFormatter,

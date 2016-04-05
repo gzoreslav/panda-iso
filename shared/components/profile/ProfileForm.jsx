@@ -3,11 +3,17 @@ import _ from 'lodash';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import {Button, Modal, Input} from 'react-bootstrap';
 import Loading from '../Loader.jsx';
-import DateTimeField from "react-bootstrap-datetimepicker";
-import moment from "moment";
+import DateTimeField from 'react-bootstrap-datetimepicker';
+import moment from 'moment';
 
 
 export default React.createClass({
+    propTypes: {
+        onSave: React.PropTypes.func.isRequired,
+        onClose: React.PropTypes.func.isRequired,
+        showModal: React.PropTypes.bool,
+        loading: React.PropTypes.bool
+    },
     mixins: [LinkedStateMixin],
     getInitialState() {
         return {
