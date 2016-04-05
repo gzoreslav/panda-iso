@@ -13,7 +13,8 @@ const Handler = React.createClass({
                     crumbs={[
                         {link: '/', label: 'Головна'},
                         {label: 'Календар'}
-                ]}/>
+                    ]}
+                />
                 <h4 className="title text-danger">Календар</h4>
                 <hr className="colorgraph"/>
                 <Flux connectToStores={['competitions']}>
@@ -24,7 +25,7 @@ const Handler = React.createClass({
     }
 });
 
-Handler.routerWillRun = async ({flux, state}) => {
+Handler.routerWillRun = async ({flux}) => {
     const actions = staticActions(flux);
     (typeof window !== 'undefined')
         ? actions.competitions.getCompetitions(flux)

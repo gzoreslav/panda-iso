@@ -1,5 +1,4 @@
 import React from 'react';
-import Router from 'react-router';
 import {Facebook} from '../mixins/social/Facebook.js';
 import {Button, ButtonToolbar} from 'react-bootstrap';
 import Breadcrumbs from '../components/breadcrumbs.jsx';
@@ -29,7 +28,8 @@ const LoginHandler = React.createClass({
                     crumbs={[
                         {link: '/', label: 'Головна'},
                         {label: 'Авторизація'}
-                ]}/>
+                    ]}
+                />
                 <h4 className="title text-danger">Авторизація</h4>
                 <hr className="colorgraph"/>
                 <h5>Вам необхідно авторизуватись через одну із соцмереж:</h5>

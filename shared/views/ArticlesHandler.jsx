@@ -10,7 +10,7 @@ import {staticActions} from '../mixins/fluxActions';
 const Handler = React.createClass({
     render() {
         return (
-            <div style={{position: "relative", top: "100px"}}>
+            <div style={{position: 'relative', top: '100px'}}>
                 <Slider/>
                 <div className="container">
                     <div className="row">
@@ -45,7 +45,7 @@ const Handler = React.createClass({
     }
 });
 
-Handler.routerWillRun = async ({flux, state}) => {
+Handler.routerWillRun = async ({flux}) => {
     const actions = staticActions(flux);
     (typeof window !== 'undefined')
         ? actions.articles.getArticles(flux)

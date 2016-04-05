@@ -1,5 +1,6 @@
 import 'babel/polyfill';
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import FluxComponent from 'flummox/component';
 import Flux from '../shared/Flux';
@@ -7,9 +8,10 @@ import routes from './routes';
 import performRouteHandlerStaticMethod from '../utils/performRouteHandlerStaticMethod';
 import url from 'url';
 
-var flux = new Flux();
 
-var router = Router.create({
+const flux = new Flux();
+
+const router = Router.create({
     routes: routes,
     location: Router.HistoryLocation
 });
@@ -19,7 +21,7 @@ router.run(async (Handler, state) => {
 
     await performRouteHandlerStaticMethod(state.routes, 'routerWillRun', routeHandlerInfo);
 
-    React.render(
+    ReactDOM.render(
         <FluxComponent flux={flux}>
             <Handler {...state} />
         </FluxComponent>,

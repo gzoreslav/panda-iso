@@ -1,13 +1,9 @@
-import request from 'superagent';
-import config from '../../config/default.js';
-
 export const staticAuth = () => {
     const result = {
         logged: (typeof localStorage !== 'undefined') ? !!localStorage.getItem('token') : false
     };
     if (result.logged) {
-        const token = localStorage.getItem('token');
-        result.token = token;
+        result.token = localStorage.getItem('token');
         result.id = localStorage.getItem('id');
         result.role = localStorage.getItem('role');
         result.admin = (result.role == 'sa') || (result.role == 'a') || (result.role == 'ca');

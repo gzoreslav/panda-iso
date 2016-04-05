@@ -4,6 +4,9 @@ import Results from '../../components/competition/Results.jsx';
 import {staticActions} from '../../mixins/fluxActions';
 
 const Handler = React.createClass({
+    propTypes: {
+        data: React.PropTypes.object
+    },
     render() {
         return (
             <FluxComponent connectToStores={['results']}>

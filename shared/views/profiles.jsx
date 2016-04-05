@@ -13,7 +13,8 @@ const Handler = React.createClass({
                     crumbs={[
                         {link: '/', label: 'Головна'},
                         {label: 'Учасники'}
-                ]}/>
+                    ]}
+                />
                 <h4 className="title text-danger">Учасники</h4>
                 <hr className="colorgraph"/>
                 <Flux connectToStores={['profiles']}>
@@ -24,7 +25,7 @@ const Handler = React.createClass({
     }
 });
 
-Handler.routerWillRun = async ({flux, state}) => {
+Handler.routerWillRun = async ({flux}) => {
     const actions = staticActions(flux);
     (typeof window !== 'undefined')
         ? actions.profile.fetch(flux)

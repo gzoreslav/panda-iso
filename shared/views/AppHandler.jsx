@@ -11,6 +11,9 @@ import {staticAuth} from '../mixins/auth';
 
 
 const Handler = React.createClass({
+    propTypes: {
+        pathname: React.PropTypes.string.isRequired
+    },
     render() {
         return (
             <div itemScope itemType="http://schema.org/Organization">
@@ -36,7 +39,7 @@ const Handler = React.createClass({
     }
 });
 
-Handler.routerWillRun = async ({flux, state}) => {
+Handler.routerWillRun = async ({flux}) => {
     const actions = staticActions(flux);
     actions.messages.hide();
     const auth = staticAuth();

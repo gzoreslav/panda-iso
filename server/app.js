@@ -10,7 +10,7 @@ import Flux from '../shared/Flux';
 import routes from '../client/routes';
 import performRouteHandlerStaticMethod from '../utils/performRouteHandlerStaticMethod';
 
-let app = express();
+const app = express();
 
 function log(err) {
     process.stdout.write(err.stack);
@@ -23,13 +23,15 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
-//app.use('/api', api);
-
-app.use(async function (req, res, next) {
+app.use(async function (req, res) {
     let flux = new Flux();
+    let router = null;
+    let Handler = null;
+    let state = null;
+    let html = null;
 
     try {
-        var router = Router.create({
+        router = Router.create({
             routes: routes,
             location: req.url
         });
@@ -38,11 +40,13 @@ app.use(async function (req, res, next) {
     }
 
     try {
-        var {Handler, state} = await new Promise((resolve, reject) => {
+        const o = await new Promise((resolve) => {
             router.run((Handler, state) =>
                 resolve({Handler, state})
             );
         });
+        Handler = o.Handler;
+        state = o.state;
     } catch(e) {
         log(e);
     }
@@ -54,7 +58,7 @@ app.use(async function (req, res, next) {
     }
 
     try {
-        var html = React.renderToString(
+        html = React.renderToString(
             <FluxComponent flux={flux}>
                 <Handler {...state} />
             </FluxComponent>
@@ -89,12 +93,12 @@ app.use(async function (req, res, next) {
 });
 
 app.use((req, res, next) => {
-    let err = new Error('Not Found');
+    const err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     log(err);
     res.status(err.status || 500);
     res.send({

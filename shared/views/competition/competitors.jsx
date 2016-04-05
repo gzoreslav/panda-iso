@@ -4,6 +4,9 @@ import Competitors from '../../components/competition/competitors.jsx';
 import {staticActions} from '../../mixins/fluxActions';
 
 const Handler = React.createClass({
+    propTypes: {
+        data: React.PropTypes.object
+    },
     render() {
         return (
             <FluxComponent connectToStores={['competitors']}>

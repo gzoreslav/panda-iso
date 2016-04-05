@@ -108,6 +108,14 @@ module.exports = function(grunt) {
                   'public/js/bundle.min.js': ['public/js/bundle.js']
               }
           }
+      },
+      eslint: {
+        target: [
+          'shared/**/*.{js,jsx}',
+          'server/**/*.js',
+          'config/**/*.js',
+          'client/**/*.js'
+        ]
       }
     });
 
@@ -127,6 +135,9 @@ module.exports = function(grunt) {
         'browserify:build',
         'uglify:build',
         'less:dev'
+    ]);
+    grunt.registerTask('inspect', [
+      'eslint'
     ]);
 
 };

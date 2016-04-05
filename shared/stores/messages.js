@@ -4,7 +4,7 @@ export default class extends Store {
     constructor(flux) {
         super();
 
-        let actions = flux.getActionIds('messages');
+        const actions = flux.getActionIds('messages');
         this.register(actions.error, this.error);
         this.register(actions.success, this.success);
         this.register(actions.hide, this.hide);

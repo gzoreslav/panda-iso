@@ -1,5 +1,3 @@
-import {Store} from 'flummox';
-
 const init = (h) => {
     h.setState({
         error: false,

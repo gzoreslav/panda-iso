@@ -17,7 +17,7 @@ class NotFoundHandler extends React.Component {
                         <p>Перейдіть на <a href={config.host}>головну сторінку</a> та скористайтесь пошуком. Дякуємо!</p>
                     </div>
                     <div className="col-lg-6">
-                        <img src={config.host + "/img/not-found.png"} alt="not-found" className="pull-right"/>
+                        <img src={`${config.host}/img/not-found.png`} alt="not-found" className="pull-right"/>
                     </div>
                 </div>
             </div>

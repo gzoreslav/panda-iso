@@ -10,6 +10,9 @@ export default React.createClass({
     contextTypes: {
         router: React.PropTypes.func
     },
+    propTypes: {
+        flux: React.PropTypes.object
+    },
     mixins: [
         FluxActions
     ],
@@ -26,7 +29,8 @@ export default React.createClass({
                     crumbs={[
                         {link: '/', label: 'Головна'},
                         {label: 'Адміністрування'}
-                ]}/>
+                    ]}
+                />
                 <h4 className="title text-danger">Адміністрування</h4>
                 <hr className="colorgraph"/>
                 {staticAuth().admin ? <Admin/> : <NotAllowed logged={staticAuth().logged}/>}

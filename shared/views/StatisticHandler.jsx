@@ -8,8 +8,8 @@ import Breadcrumbs from '../components/breadcrumbs.jsx';
 
 
 class StatisticHandler extends React.Component {
-    static async routerWillRun({flux, state}) {
-        let actions = flux.getActions('statistic');
+    static async routerWillRun({flux}) {
+        const actions = flux.getActions('statistic');
         if (typeof window !== 'undefined') {
             actions.getCompetitionsByType();
             actions.getCompetitionsByYear();
@@ -34,7 +34,8 @@ class StatisticHandler extends React.Component {
                     crumbs={[
                         {link: '/', label: 'Головна'},
                         {label: 'Статистика'}
-                ]}/>
+                    ]}
+                />
                 <h4 className="title text-danger">Статистика</h4>
                 <hr className="colorgraph"/> 
                 <div className="row">

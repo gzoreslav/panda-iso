@@ -9,6 +9,9 @@ export default React.createClass({
     contextTypes: {
         router: React.PropTypes.func
     },
+    propTypes: {
+        flux: React.PropTypes.object
+    },
     mixins: [
         FluxActions
     ],
