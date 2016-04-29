@@ -8,6 +8,7 @@ import Footer from '../components/footer.jsx';
 import Messages from '../components/Messages.jsx';
 import {staticActions} from '../mixins/fluxActions';
 import {staticAuth} from '../mixins/auth';
+import DocumentTitle from 'react-document-title';
 
 
 const Handler = React.createClass({
@@ -16,25 +17,27 @@ const Handler = React.createClass({
     },
     render() {
         return (
-            <div itemScope itemType="http://schema.org/Organization">
-                <FluxComponent connectToStores={['myprofile']}>
-                    <Header/>
-                </FluxComponent>
-                <FluxComponent connectToStores={['messages']}>
-                    <Messages/>
-                </FluxComponent>
-                <RouteHandler {...this.props} key={this.props.pathname}/>
-                <Footer/>
-                <ScrollToTop
-                    showUnder={160}
-                    style={{position: 'fixed', bottom: 50, right: 30, cursor: 'pointer', transitionDuration: '0.2s',
-                        transitionTimingFunction: 'linear', transitionDelay: '0s', backgroundColor: '#eee',
-                        padding: '10px'
-                    }}
-                >
-                    <span>Нагору <Glyphicon glyph="triangle-top"/></span>
-                </ScrollToTop>
-            </div>
+            <DocumentTitle title="PandaRUN - Каталог результатів змагань">
+                <div itemScope itemType="http://schema.org/Organization">
+                    <FluxComponent connectToStores={['myprofile']}>
+                        <Header/>
+                    </FluxComponent>
+                    <FluxComponent connectToStores={['messages']}>
+                        <Messages/>
+                    </FluxComponent>
+                    <RouteHandler {...this.props} key={this.props.pathname}/>
+                    <Footer/>
+                    <ScrollToTop
+                        showUnder={160}
+                        style={{position: 'fixed', bottom: 50, right: 30, cursor: 'pointer', transitionDuration: '0.2s',
+                            transitionTimingFunction: 'linear', transitionDelay: '0s', backgroundColor: '#eee',
+                            padding: '10px'
+                        }}
+                    >
+                        <span>Нагору <Glyphicon glyph="triangle-top"/></span>
+                    </ScrollToTop>
+                </div>
+            </DocumentTitle>
         );
     }
 });

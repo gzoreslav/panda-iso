@@ -6,6 +6,7 @@ import config from '../../../config/default.js';
 import {Input, Button, Nav, NavItem, Row, Col, Glyphicon, Thumbnail} from 'react-bootstrap';
 import Loading from '../Loader.jsx';
 import Breadcrumbs from '../breadcrumbs.jsx';
+import DocumentTitle from 'react-document-title';
 
 
 export default React.createClass({
@@ -14,25 +15,27 @@ export default React.createClass({
     },
     render() {
         return (
-            <div className="container page-wrapper" itemScope itemType="http://schema.org/SportsEvent">
-                <Breadcrumbs
-                    crumbs={[
-                        {link: '/', label: 'Головна'},
-                        {link: '/competitions', label: 'Календар'},
-                        {link: `/competitions/${_.get(this.state, 'data.data.id_competition')}`,
-                            label: _.get(this.state, 'data.data.competition_title')},
-                        {label: _.get(this.state, 'data.data.title')}
-                ]}/>
-                <Loading loading={this.props.loading || this.state.loading}>
-                    <Info data={_.get(this.state, 'data.data', {})}/>
-                </Loading>
-                <hr className="colorgraph"/>
-                <Tabs data={_.get(this.state, 'data.data', {})}/>
-                <RouteHandler
-                    {...this.props}
-                    data={_.get(this.state, 'data.data', {})}
-                    key={this.props.pathname}/>
-            </div>
+            <DocumentTitle title={`PandaRUN - ${_.get(this.state, 'data.data.competition_title')} - ${_.get(this.state, 'data.data.title', 'Завантаження змагання ...')}`}>
+                <div className="container page-wrapper" itemScope itemType="http://schema.org/SportsEvent">
+                    <Breadcrumbs
+                        crumbs={[
+                            {link: '/', label: 'Головна'},
+                            {link: '/competitions', label: 'Календар'},
+                            {link: `/competitions/${_.get(this.state, 'data.data.id_competition')}`,
+                                label: _.get(this.state, 'data.data.competition_title')},
+                            {label: _.get(this.state, 'data.data.title')}
+                    ]}/>
+                    <Loading loading={this.props.loading}>
+                        <Info data={_.get(this.state, 'data.data', {})}/>
+                    </Loading>
+                    <hr className="colorgraph"/>
+                    <Tabs data={_.get(this.state, 'data.data', {})}/>
+                    <RouteHandler
+                        {...this.props}
+                        data={_.get(this.state, 'data.data', {})}
+                        key={this.props.pathname}/>
+                </div>
+            </DocumentTitle>
         );
     }
 });
@@ -64,7 +67,7 @@ const Info = React.createClass({
                         <Glyphicon style={{width: '40px'}} glyph="map-marker"/>
                         {this.props.data.location}<br/>
                         <Glyphicon style={{width: '40px'}} glyph="resize-horizontal"/>
-                        {this.props.data.dist ? `${this.props.data.dist.toFixed(2)}км` : 'дистанція не вказана'}<br/>
+                        {this.props.data.dist ? `${this.props.data.dist.toFixed(4)}км` : 'дистанція не вказана'}<br/>
                         {circles}
                     </Col>
                 </Row>

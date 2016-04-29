@@ -7,20 +7,33 @@ import Sharer from '../Sharer.jsx';
 import Loading from '../Loader.jsx';
 import {naFormatter, dateFormatter, sexFormatter} from '../../mixins/formatter';
 import auth from '../../mixins/auth';
+import pagination from '../../mixins/pagination';
+import constants from '../../constants';
+import TablePaginations from '../paginations.jsx';
+
 
 export default React.createClass({
     getInitialState() {
         return {
             loading: true,
             data: {},
-            showDetails: false
+            showDetails: false,
+            activePage: 1
         };
     },
     componentWillReceiveProps(nextProps) {
         this.setState(nextProps);
     },
     toggleDetails() {
-        this.setState({showDetails: !this.state.showDetails});
+        this.setState({
+            showDetails: !this.state.showDetails,
+            activePage: 1
+        });
+    },
+    onPageChange(e, event) {
+        this.setState({
+            activePage: event.eventKey
+        });
     },
     render() {
         const laps = this.state.showDetails ?
@@ -51,7 +64,10 @@ export default React.createClass({
                 <ResultRows
                     showDetails={this.state.showDetails}
                     info={this.props.parentData}
-                    data={this.props.data.data}/>
+                    data={this.props.data.data}
+                    activePage={this.state.activePage}
+                    itemsPerPage={constants.itemsPerPage.results}
+                />
             </Table>;
         return (
             <Loading loading={this.state.loading || this.props.loading}>
@@ -60,6 +76,12 @@ export default React.createClass({
                     toggle={this.toggleDetails}
                 />
                 {table}
+                <TablePaginations
+                    activePage={this.state.activePage}
+                    itemsPerPage={constants.itemsPerPage.results}
+                    data={_.get(this.props, 'data.data', [])}
+                    onPageChange={this.onPageChange}
+                />
             </Loading>
         );
     }
@@ -68,12 +90,21 @@ export default React.createClass({
 const Toolbar = React.createClass({
     render() {
         return (
-            <Row style={{marginTop: '16px'}}>
-                <Col lg={12}>
+            <Row style={{marginTop: '26px', marginBottom: '16px'}}>
+                <Col lg={9}>
+                    <ButtonToolbar>
+                        <ButtonGroup bsSize="small">
+                            <Button active>всі</Button>
+                            <Button>чоловіки</Button>
+                            <Button>жінки</Button>
+                        </ButtonGroup>
+                    </ButtonToolbar>
+                </Col>
+                <Col lg={3}>
                     <ButtonToolbar className="pull-right">
                         <ButtonGroup bsSize="small">
-                            <Button active={!this.props.showDetails} onClick={this.props.toggle}>Зведено</Button>
-                            <Button active={this.props.showDetails} onClick={this.props.toggle}>Детально</Button>
+                            <Button bsStyle="success" active={!this.props.showDetails} onClick={this.props.toggle}>Зведено</Button>
+                            <Button bsStyle="danger" active={this.props.showDetails} onClick={this.props.toggle}>Детально</Button>
                         </ButtonGroup>
                     </ButtonToolbar>
                 </Col>
@@ -87,11 +118,12 @@ const ResultRows = React.createClass({
         naFormatter,
         dateFormatter,
         sexFormatter,
-        auth
+        auth,
+        pagination
     ],
     render: function() {
         const rows = this.props.data
-            .map(result => {
+            .map((result, i) => {
                 const valuesByLaps = this.props.showDetails ?
                     result.laps.map(lap =>
                         <td>
@@ -101,27 +133,29 @@ const ResultRows = React.createClass({
                     )
                     : null;
                 return (
-                    <tr className={classNames({me: result.id_user == this.auth.id})}>
-                        <td><span className="pull-right">{result.rank}</span></td>
-                        <td><span className="pull-right">{result.number}</span></td>
-                        <td>
-                            <span itemProp="performers" itemScope itemType="http://schema.org/Person">
-                                <a href="#"><span itemProp="name">{result.firstname + ' ' + result.lastname}</span></a>
-                                {/*<Sharer
-                                    info={this.props.info}
-                                    result={result}/>*/}
-                            </span>
-                        </td>
-                        <td>{this.formatters.sex(result.sex)}</td>
-                        {valuesByLaps}
-                        <td className="mark">
-                            {result.fall
-                                ? <span className="fall">зійшов з дистанції</span>
-                                : <span className="val">{this.formatters.na(result.total.time)}</span>}
-                            {!this.props.showDetails && !result.fall ? <LapDiff data={result.total}/> : null}
-                            {this.props.showDetails ? <CellSummary data={result.total}/> : null}
-                        </td>
-                    </tr>
+                    this.checkPage(i) ?
+                        <tr className={classNames({me: result.id_user == this.auth.id})}>
+                            <td><span className="pull-right">{result.rank}</span></td>
+                            <td><span className="pull-right">{result.number}</span></td>
+                            <td>
+                                <span itemProp="performers" itemScope itemType="http://schema.org/Person">
+                                    <a href="#"><span itemProp="name">{result.firstname + ' ' + result.lastname}</span></a>
+                                    {/*<Sharer
+                                        info={this.props.info}
+                                        result={result}/>*/}
+                                </span>
+                            </td>
+                            <td>{this.formatters.sex(result.sex)}</td>
+                            {valuesByLaps}
+                            <td className="mark">
+                                {result.fall
+                                    ? <span className="fall">зійшов з дистанції</span>
+                                    : <span className="val">{this.formatters.na(result.total.time)}</span>}
+                                {!this.props.showDetails && !result.fall ? <LapDiff data={result.total}/> : null}
+                                {this.props.showDetails ? <CellSummary data={result.total}/> : null}
+                            </td>
+                        </tr>
+                        : null
                 );
             });
         return (
